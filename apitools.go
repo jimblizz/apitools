@@ -53,6 +53,16 @@ func (a Api) SendBad(w http.ResponseWriter, message string) {
     }
 }
 
+func (a Api) SendAccessDenied(w http.ResponseWriter, message string) {
+    w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+    w.WriteHeader(http.StatusForbidden)
+
+    err := json.NewEncoder(w).Encode(ApiResponse{403, message})
+    if err != nil {
+        a.Log.Error("Error sending response", err)
+    }
+}
+
 func (a Api) SendNotFound(w http.ResponseWriter, message string) {
     w.Header().Set("Content-Type", "application/json; charset=UTF-8")
     w.WriteHeader(http.StatusNotFound)
