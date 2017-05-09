@@ -9,6 +9,7 @@ import (
     "encoding/json"
     "github.com/gorilla/mux"
     "github.com/jimblizz/logger"
+    "strconv"
 )
 
 type ApiResponse struct {
@@ -19,6 +20,13 @@ type ApiResponse struct {
 type Api struct {
     Routes map[string]string `json:"routes"`
     Log *logger.Logger
+}
+
+type File struct {
+    Name		string
+    ContentType         string
+    BodyLength 	        float64
+    Body       	        []byte
 }
 
 func New(log *logger.Logger) *Api {
@@ -81,4 +89,16 @@ func (a Api) SendError(w http.ResponseWriter, message string) {
     if err != nil {
         a.Log.Error("Error sending response", err)
     }
+}
+
+func (a Api) SendDownload(w http.ResponseWriter, file File, disposition string) () {
+    if disposition == "" {
+        disposition = "attachment"
+    }
+
+    w.Header().Set("Content-Disposition", disposition + "; filename=\"" + file.Name + "\"")
+    w.Header().Set("Content-Type", file.ContentType)
+    w.Header().Set("Content-Length", strconv.Itoa(len(file.Body)))
+
+    w.Write(file.Body)
 }
