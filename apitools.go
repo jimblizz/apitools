@@ -99,6 +99,7 @@ func (a Api) SendDownload(w http.ResponseWriter, file File, disposition string) 
     w.Header().Set("Content-Disposition", disposition + "; filename=\"" + file.Name + "\"")
     w.Header().Set("Content-Type", file.ContentType)
     w.Header().Set("Content-Length", strconv.Itoa(len(file.Body)))
+    w.Header().Set("Cache-Control", "no-cache")
 
     w.Write(file.Body)
 }
