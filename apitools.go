@@ -9,7 +9,8 @@ import (
     "encoding/json"
     "github.com/gorilla/mux"
     "github.com/jimblizz/logger"
-    "strconv"
+    "time"
+    "bytes"
 )
 
 type ApiResponse struct {
@@ -91,7 +92,7 @@ func (a Api) SendError(w http.ResponseWriter, message string) {
     }
 }
 
-func (a Api) SendDownload(w http.ResponseWriter, file File, disposition string) () {
+func (a Api) SendDownload(w http.ResponseWriter, r *http.Request, file File, disposition string) () {
     if disposition == "" {
         disposition = "attachment"
     }
